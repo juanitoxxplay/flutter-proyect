@@ -3,7 +3,7 @@ import '../models/auto_model.dart';
 import '../services/mock_autos.dart';
 import '../widgets/auto_card.dart';
 import 'form_page.dart';
-import '../theme/theme.dart'; // 👈 importa tu paleta
+import '../theme/theme.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -39,6 +39,11 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text('Lista de Autos'),
         centerTitle: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(25),
+          ),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
@@ -48,6 +53,9 @@ class _HomePageState extends State<HomePage> {
           );
           _recargarAutos();
         },
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30),
+        ),
         child: const Icon(Icons.add),
       ),
       body: _autos.isEmpty

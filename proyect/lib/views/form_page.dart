@@ -61,14 +61,22 @@ class _FormPageState extends State<FormPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Registrar Auto')),
+      appBar: AppBar(
+        title: const Text('Registrar Auto'),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(25),
+          ),
+        ),
+      ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
           elevation: 4,
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(30),
             child: Form(
               key: _formKey,
               child: Column(
@@ -123,18 +131,43 @@ class _FormPageState extends State<FormPage> {
                     }),
                   ),
                   const SizedBox(height: 12),
-                  SwitchListTile(
-                    title: const Text('¿Está Activo?'),
-                    value: _isActive,
-                    onChanged: (val) => setState(() => _isActive = val),
-                    secondary: Icon(_isActive ? Icons.check_circle : Icons.cancel),
+                  // Reemplaza el SwitchListTile actual con este código:
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    child: SwitchListTile(
+                      key: ValueKey<bool>(
+                          _isActive), // Importante para la animación
+                      title: const Text('¿Está Activo?'),
+                      value: _isActive,
+                      onChanged: (val) => setState(() => _isActive = val),
+                      secondary: AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: _isActive
+                              ? Colors.green.withOpacity(0.2)
+                              : Colors.grey.withOpacity(0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          _isActive ? Icons.check_circle : Icons.cancel,
+                          color:
+                              _isActive ? Colors.green[800] : Colors.grey[700],
+                        ),
+                      ),
+                      activeColor: Colors.green,
+                      inactiveThumbColor: Colors.grey[600],
+                    ),
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton.icon(
                     icon: const Icon(Icons.save),
                     label: const Text('Guardar Auto'),
                     onPressed: _guardar,
-                    style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(48),
+                      foregroundColor: Colors.white,
+                    ),
                   ),
                 ],
               ),
