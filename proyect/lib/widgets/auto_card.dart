@@ -11,6 +11,27 @@ class AutoCard extends StatelessWidget {
     this.onToggleEstado,
   });
 
+  String getTipoNombre(int idtype) {
+    switch (idtype) {
+      case 1:
+        return 'Sedán';
+      case 2:
+        return 'Pickup';
+      case 3:
+        return 'SUV';
+      case 4:
+        return 'Hatchback';
+      case 5:
+        return 'Convertible';
+      case 6:
+        return 'Van';
+      default:
+        return 'Otro';
+    }
+  }
+
+  bool get estaActivo => auto.isActive == 1;
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -21,7 +42,7 @@ class AutoCard extends StatelessWidget {
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(30),
-        onTap: () {}, // Puedes añadir una acción al tocar la tarjeta
+        onTap: () {},
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
@@ -29,21 +50,20 @@ class AutoCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: auto.isActive
+                  color: estaActivo
                       ? Colors.green.withOpacity(0.2)
                       : Colors.grey.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.directions_car,
-                  color: auto.isActive ? Colors.green[800] : Colors.grey[700],
+                  color: estaActivo ? Colors.green[800] : Colors.grey[700],
                   size: 28,
                 ),
               ),
 
               const SizedBox(width: 16),
 
-              // Información del auto
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,7 +81,7 @@ class AutoCard extends StatelessWidget {
                         Icon(Icons.category, size: 14, color: Colors.grey[600]),
                         const SizedBox(width: 4),
                         Text(
-                          auto.type,
+                          getTipoNombre(auto.idtype),
                           style: TextStyle(color: Colors.grey[600]),
                         ),
                         const SizedBox(width: 12),
@@ -89,7 +109,7 @@ class AutoCard extends StatelessWidget {
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
                 child: Switch(
-                  value: auto.isActive,
+                  value: estaActivo,
                   activeColor: Colors.green,
                   activeTrackColor: Colors.green[200],
                   inactiveThumbColor: Colors.grey[600],
