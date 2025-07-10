@@ -14,34 +14,120 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late List<Auto> _autos;
+  late List<Auto> _autosFiltrados;
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _autos = mockAutos;
+    _autosFiltrados = List.from(_autos);
+    _searchController.addListener(_filtrarAutos);
+  }
+
+  @override
+  void dispose() {
+    _searchController.removeListener(_filtrarAutos);
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _filtrarAutos() {
+    final query = _searchController.text.toLowerCase();
+    setState(() {
+      if (query.isEmpty) {
+        _autosFiltrados = List.from(_autos);
+      } else {
+        _autosFiltrados = _autos
+            .where((auto) =>
+                auto.description.toLowerCase().contains(query) ||
+                auto.type.toLowerCase().contains(query))
+            .toList();
+      }
+    });
   }
 
   void _recargarAutos() {
     setState(() {
       _autos = mockAutos;
+      _autosFiltrados = List.from(_autos);
+      _searchController.clear();
     });
   }
 
   void _toggleEstadoAuto(int index) {
     setState(() {
-      _autos[index].isActive = !_autos[index].isActive;
+      final originalIndex = _autos.indexOf(_autosFiltrados[index]);
+      _autos[originalIndex].isActive = !_autos[originalIndex].isActive;
+      _filtrarAutos();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Lista de Autos'),
-        centerTitle: true,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(25),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(140),
+        child: AppBar(
+          backgroundColor: FordTheme.fordBlue,
+          elevation: 4,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(25),
+            ),
+          ),
+          flexibleSpace: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 50, 16, 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Título
+                Center(
+                  child: Text(
+                    'Autos Disponibles',
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      letterSpacing: 1.1,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                // Barra de búsqueda
+                Container(
+                  height: 45,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 8,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: TextField(
+                    controller: _searchController,
+                    style: const TextStyle(color: Colors.black87),
+                    cursorColor: FordTheme.fordBlue,
+                    decoration: InputDecoration(
+                      hintText: 'Buscar autos...',
+                      hintStyle: TextStyle(
+                        color: Colors.grey[600],
+                        fontWeight: FontWeight.w500,
+                      ),
+                      prefixIcon: Icon(Icons.search, color: FordTheme.fordBlue),
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -58,7 +144,7 @@ class _HomePageState extends State<HomePage> {
         ),
         child: const Icon(Icons.add),
       ),
-      body: _autos.isEmpty
+      body: _autosFiltrados.isEmpty
           ? const Center(
               child: Text(
                 'No hay autos disponibles',
@@ -66,9 +152,10 @@ class _HomePageState extends State<HomePage> {
               ),
             )
           : ListView.builder(
-              itemCount: _autos.length,
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+              itemCount: _autosFiltrados.length,
               itemBuilder: (context, index) => AutoCard(
-                auto: _autos[index],
+                auto: _autosFiltrados[index],
                 onToggleEstado: () => _toggleEstadoAuto(index),
               ),
             ),

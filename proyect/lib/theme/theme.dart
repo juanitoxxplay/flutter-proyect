@@ -6,6 +6,11 @@ class FordTheme {
   static const Color lightBlue = Color(0xFF47A8E5);
   static const Color silver = Color(0xFFC6C6C6);
   static const Color white = Colors.white;
+  
+
+  // Colores para estado activo
+  static const Color activeGreen = Color(0xFF2E7D32); // un verde oscuro
+  static const Color activeGreenLight = Color(0xFF81C784); // verde claro con opacidad
 
   static ThemeData lightTheme = ThemeData(
     primaryColor: fordBlue,
