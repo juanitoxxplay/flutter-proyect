@@ -22,17 +22,20 @@ class _FormPageState extends State<FormPage> {
   final _priceCtrl = TextEditingController();
   final _capacityCtrl = TextEditingController();
 
-  String _selectedType = 'Sedan';
-  bool _isActive = true;
+
   File? _fotoSeleccionada;
 
-  final List<String> _tipos = [
-    'Sedan',
-    'Camioneta',
-    'Deportivo',
-    'Diesel',
-    '350'
-  ];
+  final Map<String, int> _tipoMap = {
+    'Sedán': 1,
+    'Pickup': 2,
+    'SUV': 3,
+    'Hatchback': 4,
+    'Convertible': 5,
+    'Van': 6,
+
+
+  String _selectedTipoNombre = 'Sedán';
+  bool _isActive = true;
 
   void _guardar() {
     if (_formKey.currentState!.validate()) {
@@ -42,8 +45,8 @@ class _FormPageState extends State<FormPage> {
         codBrand: _brandCtrl.text,
         price: double.tryParse(_priceCtrl.text) ?? 0,
         capacity: int.tryParse(_capacityCtrl.text) ?? 0,
-        type: _selectedType,
-        isActive: _isActive,
+        idtype: _tipoMap[_selectedTipoNombre] ?? 0,
+        isActive: int.tryParse(_capacityCtrl.text) ?? 0,
       );
 
       ApiService().saveAuto(auto).then((_) {
@@ -79,6 +82,7 @@ class _FormPageState extends State<FormPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
           ),
+
           elevation: 4,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 15, 20, 40),
@@ -130,15 +134,15 @@ class _FormPageState extends State<FormPage> {
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.car_rental),
                     ),
-                    value: _selectedType,
-                    items: _tipos
+                    value: _selectedTipoNombre,
+                    items: _tipoMap.keys
                         .map((tipo) => DropdownMenuItem(
                               value: tipo,
                               child: Text(tipo),
                             ))
                         .toList(),
                     onChanged: (value) => setState(() {
-                      _selectedType = value!;
+                      _selectedTipoNombre = value!;
                     }),
                   ),
                   const SizedBox(height: 12),
@@ -166,6 +170,8 @@ class _FormPageState extends State<FormPage> {
                       child: Icon(
                         _isActive ? Icons.check_circle : Icons.cancel,
                         color: _isActive ? Colors.green[800] : Colors.grey[700],
+
+    
                       ),
                     ),
                     activeColor: Colors.green,

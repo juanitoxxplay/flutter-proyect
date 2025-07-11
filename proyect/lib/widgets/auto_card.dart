@@ -15,6 +15,27 @@ class AutoCard extends StatelessWidget {
     this.imageUrl,
   });
 
+  String getTipoNombre(int idtype) {
+    switch (idtype) {
+      case 1:
+        return 'Sedán';
+      case 2:
+        return 'Pickup';
+      case 3:
+        return 'SUV';
+      case 4:
+        return 'Hatchback';
+      case 5:
+        return 'Convertible';
+      case 6:
+        return 'Van';
+      default:
+        return 'Otro';
+    }
+  }
+
+  bool get estaActivo => auto.isActive == 1;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -38,6 +59,8 @@ class AutoCard extends StatelessWidget {
             ),
           );
         },
+
+
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
@@ -45,20 +68,25 @@ class AutoCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
+
                   color: auto.isActive
                       ? FordTheme.activeGreenLight.withOpacity(0.3)
                       : theme.disabledColor.withOpacity(0.1),
+
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.directions_car,
+
                   color: auto.isActive
                       ? FordTheme.activeGreen
                       : theme.disabledColor,
+
                   size: 28,
                 ),
               ),
               const SizedBox(width: 16),
+
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,9 +103,10 @@ class AutoCard extends StatelessWidget {
                         Icon(Icons.category, size: 14, color: theme.hintColor),
                         const SizedBox(width: 4),
                         Text(
-                          auto.type,
-                          style: theme.textTheme.bodySmall
-                              ?.copyWith(color: theme.hintColor),
+
+                          getTipoNombre(auto.idtype),
+                          style: TextStyle(color: Colors.grey[600]),
+
                         ),
                         const SizedBox(width: 12),
                         Icon(Icons.people, size: 14, color: theme.hintColor),
@@ -100,6 +129,7 @@ class AutoCard extends StatelessWidget {
                   ],
                 ),
               ),
+
               // Este GestureDetector evita que el onTap del InkWell se active al tocar el Switch
               GestureDetector(
                 onTap: () {},
@@ -113,6 +143,18 @@ class AutoCard extends StatelessWidget {
                     inactiveTrackColor: theme.disabledColor.withOpacity(0.3),
                     onChanged: (_) => onToggleEstado?.call(),
                   ),
+
+
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: Switch(
+                  value: estaActivo,
+                  activeColor: Colors.green,
+                  activeTrackColor: Colors.green[200],
+                  inactiveThumbColor: Colors.grey[600],
+                  inactiveTrackColor: Colors.grey[300],
+                  onChanged: (_) => onToggleEstado?.call(),
+
                 ),
               ),
             ],

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/auto_model.dart';
-import '../services/mock_autos.dart';
+import '../services/api_service.dart';
 import '../widgets/auto_card.dart';
 import 'form_page.dart';
 import '../theme/theme.dart';
@@ -13,14 +13,32 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late List<Auto> _autos;
+
+  late List<Auto> _autos = [];
   late List<Auto> _autosFiltrados;
   final TextEditingController _searchController = TextEditingController();
+
 
   @override
   void initState() {
     super.initState();
-    _autos = mockAutos;
+
+  
+   _fetchAutos();
+  }
+
+  Future<void> _fetchAutos() async {
+    try {
+      final autos = await ApiService.getAutos();
+      setState(() {
+        _autos = autos;
+      });
+    } catch (e) {
+      print('Error al obtener autos: $e');
+      setState(() {
+        _autos = [];
+      });
+    }
     _autosFiltrados = List.from(_autos);
     _searchController.addListener(_filtrarAutos);
   }
@@ -49,18 +67,24 @@ class _HomePageState extends State<HomePage> {
 
   void _recargarAutos() {
     setState(() {
-      _autos = mockAutos;
+      _autos = autos;
       _autosFiltrados = List.from(_autos);
       _searchController.clear();
     });
+
   }
 
   void _toggleEstadoAuto(int index) {
     setState(() {
+
       final originalIndex = _autos.indexOf(_autosFiltrados[index]);
       _autos[originalIndex].isActive = !_autos[originalIndex].isActive;
       _filtrarAutos();
+
     });
+
+   
+  ApiService().updateEstado(_autos[index]);
   }
 
   @override
@@ -137,7 +161,7 @@ class _HomePageState extends State<HomePage> {
             context,
             MaterialPageRoute(builder: (_) => const FormPage()),
           );
-          _recargarAutos();
+          await _fetchAutos();
         },
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30),
@@ -160,5 +184,5 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
     );
-  }
+  } 
 }
