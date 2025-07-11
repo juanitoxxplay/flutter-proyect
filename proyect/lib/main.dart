@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'theme/theme.dart';
-import 'views/home_page.dart';
+import 'views/welcome_page.dart'; 
 
 void main() => runApp(const MyApp());
 
@@ -12,9 +12,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Gestion de Autos',
+      title: 'Gestión de Autos',
       theme: FordTheme.lightTheme,
-      home: const HomePage(),
+      home: const WelcomePage(),
       debugShowCheckedModeBanner: false,
     );
   }
